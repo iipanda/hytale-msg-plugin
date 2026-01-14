@@ -7,18 +7,20 @@ import com.hypixel.hytale.server.core.command.system.CommandContext
 import com.hypixel.hytale.server.core.command.system.CommandUtil
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase
-import com.hypixel.hytale.server.core.console.ConsoleSender
-import com.hypixel.hytale.server.core.entity.entities.Player
 import com.hypixel.hytale.server.core.universe.Universe
 import com.hypixel.hytale.server.core.universe.world.SoundUtil
 
-class ReplyCommand(private val replyManager: ReplyManager) :
-    CommandBase("reply", "Reply to your last private message") {
-    init {
+class ReplyCommand(
+    private val replyManager: ReplyManager,
+    private val messageFormatter: MessageFormatter,
+) : CommandBase("reply", "Reply to your last private message") {
+    init { // String argument only allows a single string with no spaces, so we parse the value manually using the raw command.
+        // We include the argument so that the presence of the parameter is validated by the parser, and so that it's
+        // included in help messages.
+        withListRequiredArg("message", "The message to send", ArgTypes.STRING)
+        
         setAllowsExtraArguments(true)
     }
-    
-    private val messageArgument = withListRequiredArg("message", "The message to send", ArgTypes.STRING)
     
     override fun executeSync(context: CommandContext) {
         val sender = context.sender()
@@ -30,14 +32,7 @@ class ReplyCommand(private val replyManager: ReplyManager) :
             ?: return context.sendMessage(Message.raw("The player you're replying to is offline").color("#ff0055"))
         
         val msg = CommandUtil.stripCommandName(context.inputString)
-        
-        val senderName = when (sender) {
-            is Player -> sender.displayName
-            is ConsoleSender -> "Console"
-            else -> sender.javaClass.simpleName
-        }
-        
-        val message = buildMessage(senderName, receiver.username, msg)
+        val message = messageFormatter.formatPrivateMessage(sender, receiver, msg)
         
         sender.sendMessage(message)
         

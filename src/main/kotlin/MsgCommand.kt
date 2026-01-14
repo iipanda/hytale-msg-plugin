@@ -6,17 +6,23 @@ import com.hypixel.hytale.server.core.command.system.CommandContext
 import com.hypixel.hytale.server.core.command.system.CommandUtil
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase
-import com.hypixel.hytale.server.core.console.ConsoleSender
-import com.hypixel.hytale.server.core.entity.entities.Player
 import com.hypixel.hytale.server.core.universe.world.SoundUtil
 
-class MsgCommand(private val replyManager: ReplyManager) : CommandBase("msg", "Private message the player") {
+class MsgCommand(
+    private val replyManager: ReplyManager,
+    private val messageFormatter: MessageFormatter,
+) : CommandBase("msg", "Private message the player") {
     init {
         addAliases("pm", "tell", "whisper")
         setAllowsExtraArguments(true)
     }
     
     private val playerArgument = withRequiredArg("player", "The player to send the message to", ArgTypes.PLAYER_REF)
+    
+    // String argument only allows a single string with no spaces, so we parse the value manually using the raw command.
+    // We include the argument so that the presence of the parameter is validated by the parser, and so that it's
+    // included in help messages.
+    @Suppress("Unused")
     private val messageArgument = withRequiredArg("message", "The message to send", ArgTypes.STRING)
     
     override fun executeSync(context: CommandContext) {
@@ -25,13 +31,7 @@ class MsgCommand(private val replyManager: ReplyManager) : CommandBase("msg", "P
         val msg = rawArguments.split(" ").drop(1).joinToString(" ")
         
         val sender = context.sender()
-        val senderName = when (sender) {
-            is Player -> sender.displayName
-            is ConsoleSender -> "Console"
-            else -> sender.javaClass.simpleName
-        }
-        
-        val message = buildMessage(senderName, receiver.username, msg)
+        val message = messageFormatter.formatPrivateMessage(sender, receiver, msg)
         
         sender.sendMessage(message)
         
