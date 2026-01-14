@@ -6,6 +6,9 @@ import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase
 import com.hypixel.hytale.server.core.console.ConsoleSender
 import com.hypixel.hytale.server.core.entity.entities.Player
+import com.hypixel.hytale.protocol.SoundCategory
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 
 class MsgCommand : CommandBase("msg", "Private message the player") {
     init {
@@ -30,7 +33,10 @@ class MsgCommand : CommandBase("msg", "Private message the player") {
         
         sender.sendMessage(message)
         
+        
+        val soundEventIndex = SoundEvent.getAssetMap().getIndex("Message_Received")
         receiver.sendMessage(message)
+        SoundUtil.playSoundEvent2dToPlayer(receiver, soundEventIndex, SoundCategory.UI)
     }
     
     private fun buildMessage(senderName: String, receiverName: String, content: String) =

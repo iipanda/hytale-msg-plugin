@@ -4,6 +4,7 @@
   "Main": "com.github.iipanda.MsgPlugin",
   "Version": "1.0.0",
   "Description": "Plugin that adds private messages",
+  "IncludesAssetPack": true,
   "Authors": [
     {
       "Name": "iipanda",
