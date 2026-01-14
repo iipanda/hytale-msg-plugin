@@ -7,7 +7,7 @@ class ReplyManager {
     
     fun setLastMessagedPlayer(senderUuid: UUID, receiverUuid: UUID) {
         lastMessagedPlayers[senderUuid] = receiverUuid
-        lastMessagedPlayers[receiverUuid] = receiverUuid
+        lastMessagedPlayers[receiverUuid] = senderUuid
     }
     
     fun getLastMessagedPlayer(senderUuid: UUID) = lastMessagedPlayers.get(senderUuid)
