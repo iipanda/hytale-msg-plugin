@@ -1,9 +1,9 @@
 {
-  "Name": "HytalePlugin",
+  "Name": "MsgPlugin",
   "Group": "com.github.iipanda",
-  "Main": "com.github.iipanda.HytalePlugin",
+  "Main": "com.github.iipanda.MsgPlugin",
   "Version": "1.0.0",
-  "Description": "Kotlin Hytale plugin",
+  "Description": "Plugin that adds private messages",
   "Authors": [
     {
       "Name": "iipanda",
