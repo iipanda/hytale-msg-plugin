@@ -1,0 +1,14 @@
+{
+  "Name": "HytalePlugin",
+  "Group": "com.github.iipanda",
+  "Main": "com.github.iipanda.HytalePlugin",
+  "Version": "1.0.0",
+  "Description": "Kotlin Hytale plugin",
+  "Authors": [
+    {
+      "Name": "iipanda",
+      "Email": null,
+      "Url": null
+    }
+  ]
+}
