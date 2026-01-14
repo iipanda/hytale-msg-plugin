@@ -32,12 +32,13 @@ class ReplyCommand(
             ?: return context.sendMessage(Message.raw("The player you're replying to is offline").color("#ff0055"))
         
         val msg = CommandUtil.stripCommandName(context.inputString)
-        val message = messageFormatter.formatPrivateMessage(sender, receiver, msg)
+        val messageToSender = messageFormatter.formatSentMessage(sender, receiver, msg)
+        val messageToReceiver = messageFormatter.formatReceivedMessage(sender, receiver, msg)
         
-        sender.sendMessage(message)
+        sender.sendMessage(messageToSender)
         
         val soundEventIndex = SoundEvent.getAssetMap().getIndex("Message_Received")
-        receiver.sendMessage(message)
+        receiver.sendMessage(messageToReceiver)
         SoundUtil.playSoundEvent2dToPlayer(receiver, soundEventIndex, SoundCategory.UI)
     }
 }

@@ -13,9 +13,23 @@ class MessageFormatter(private val config: Config<MsgPluginConfig>) {
         return Message(formatted)
     }
     
-    fun formatPrivateMessage(sender: CommandSender, receiver: PlayerRef, content: String): Message {
+    fun formatSentMessage(sender: CommandSender, receiver: PlayerRef, content: String): Message {
         val cfg = config.get()
-        val template = cfg.messageFormat
+        val template = cfg.messageFormatSent
+        
+        return format(
+            template,
+            mapOf(
+                "sender" to sender.displayName,
+                "receiver" to receiver.username,
+                "message" to content,
+            ),
+        )
+    }
+    
+    fun formatReceivedMessage(sender: CommandSender, receiver: PlayerRef, content: String): Message {
+        val cfg = config.get()
+        val template = cfg.messageFormatReceived
         
         return format(
             template,
@@ -34,9 +48,10 @@ class MessageFormatter(private val config: Config<MsgPluginConfig>) {
     
     private fun replacePlaceholders(text: String, values: Map<String, String>): String =
         PLACEHOLDER_REGEX.replace(text) { match ->
-            values[match.groupValues[1]] ?: match.value
+            val key = match.groupValues[1]
+            values[key] ?: match.value
         }
-    
+
     private companion object {
         private val PLACEHOLDER_REGEX = Regex("\\{([a-zA-Z0-9_]+)}")
     }

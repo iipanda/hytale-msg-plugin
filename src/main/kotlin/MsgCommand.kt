@@ -31,12 +31,13 @@ class MsgCommand(
         val msg = rawArguments.split(" ").drop(1).joinToString(" ")
         
         val sender = context.sender()
-        val message = messageFormatter.formatPrivateMessage(sender, receiver, msg)
+        val messageToSender = messageFormatter.formatSentMessage(sender, receiver, msg)
+        val messageToReceiver = messageFormatter.formatReceivedMessage(sender, receiver, msg)
         
-        sender.sendMessage(message)
+        sender.sendMessage(messageToSender)
         
         val soundEventIndex = SoundEvent.getAssetMap().getIndex("Message_Received")
-        receiver.sendMessage(message)
+        receiver.sendMessage(messageToReceiver)
         SoundUtil.playSoundEvent2dToPlayer(receiver, soundEventIndex, SoundCategory.UI)
         
         replyManager.setLastMessagedPlayer(sender.uuid, receiver.uuid)
