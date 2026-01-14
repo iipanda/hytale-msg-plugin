@@ -1,6 +1,7 @@
 package com.github.iipanda
 
 import com.hypixel.hytale.protocol.SoundCategory
+import com.hypixel.hytale.server.core.Message
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent
 import com.hypixel.hytale.server.core.command.system.CommandContext
 import com.hypixel.hytale.server.core.command.system.CommandUtil
@@ -31,6 +32,11 @@ class MsgCommand(
         val msg = rawArguments.split(" ").drop(1).joinToString(" ")
         
         val sender = context.sender()
+        if (sender.uuid == receiver.uuid) {
+            sender.sendMessage(Message.raw("You cannot message yourself").color("#ff0055"))
+            return
+        }
+        
         val messageToSender = messageFormatter.formatSentMessage(sender, receiver, msg)
         val messageToReceiver = messageFormatter.formatReceivedMessage(sender, receiver, msg)
         
